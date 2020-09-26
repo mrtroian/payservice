@@ -1,0 +1,20 @@
+payment_providers: [
+  {
+    name: ApplePay,
+    host: localhost,
+    port: 11042,
+    endpoint: api/v1/payment-gateways
+  },
+  {
+    name: GooglePay,
+    host: localhost,
+    port: 11043,
+    endpoint: api/v1/payment-gateways
+  },
+  {
+    name: PayPal,
+    host: localhost,
+    port: 11044,
+    endpoint: api/v1/payment-gateways
+  },
+]

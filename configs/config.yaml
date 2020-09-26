@@ -1,0 +1,18 @@
+--- 
+endpoint: api/v1/payment-methods
+host: localhost
+port: 9902
+payment_providers: [
+  {
+    name: ApplePay,
+    url: https://localhost:11042/api/v1/payment-gateways/
+  },
+  {
+    name: GooglePay,
+    url: https://localhost:11043/api/v1/payment-gateways/
+  },
+  {
+    name: PayPal,
+    url: https://localhost:11044/api/v1/payment-gateways/
+  },
+]
