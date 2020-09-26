@@ -30,7 +30,7 @@ To run the app use:
 The `make run` will generate easyjson, build, export config and launch the app.
 You can also `make` and launch the app manually by passing `config.yaml`:
 
-	$ make run
+	$ make
 	$ ./bin/payservice -config path/to/config.yaml
 
 ## Running tests
@@ -42,9 +42,9 @@ the app and the mocking server before running integration tests.
 The flow:
 
 	$ make run
-	$ make mocker-run
+	$ make run-mocker
 	$ make integration-test
 
 ## Manual testing
 
-After `make run` and `make mocker-run`, you can enjoy the API via Postman or whatever you like!
+After `make run` and `make run-mocker`, you can enjoy the API via Postman or whatever you like!
