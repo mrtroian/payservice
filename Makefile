@@ -32,6 +32,8 @@ test: nocache
 	sh $(CWD)/scripts/run_test_unit.sh
 
 test-integration: export PAYSERVICE_CONFIG_PATH=$(CONF)
+test-integration: export SSL_KEY=$(SSLPATH)/localhost.key
+test-integration: export SSL_CERT=$(SSLPATH)/localhost.crt
 test-integration: nocache
 	sh $(CWD)/scripts/run_test_integration.sh
 

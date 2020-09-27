@@ -50,5 +50,37 @@ func GetConfig() (*Config, error) {
 	conf.Key = os.Getenv("SSL_KEY")
 	conf.Cert = os.Getenv("SSL_CERT")
 
+	if err := conf.validate(); err != nil {
+		return nil, err
+	}
+
 	return conf, nil
+}
+
+func (c *Config) validate() error {
+	if len(c.Key) <= 0 {
+		return errors.New("config: missing ssl key")
+	}
+
+	if len(c.Cert) <= 0 {
+		return errors.New("config: missing ssl certificate")
+	}
+
+	if len(c.Endpoint) <= 0 {
+		return errors.New("config: missing api 'endpoint'")
+	}
+
+	if len(c.Host) <= 0 {
+		return errors.New("config: missing 'host' value")
+	}
+
+	if c.Port <= 0 {
+		return errors.New("config: invalid 'port' value")
+	}
+
+	if len(c.Gateways) <= 0 {
+		return errors.New("config: missing 'payment_providers'")
+	}
+
+	return nil
 }
