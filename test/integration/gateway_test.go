@@ -1,18 +1,21 @@
 package methods_test
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net/http"
 	"sync"
 	"testing"
 
+	"github.com/mrtroian/payservice/internal/client"
 	"github.com/mrtroian/payservice/internal/configuration"
 )
 
 var (
-	config *configuration.Config
-	url    string
+	config      *configuration.Config
+	url         string
+	httpsClient = client.NewClient()
 )
 
 func init() {
@@ -32,7 +35,15 @@ func init() {
 }
 
 func TestNoID(t *testing.T) {
-	resp, err := http.Get(url)
+	req, err := http.NewRequest("GET", url, &bytes.Buffer{})
+
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+		return
+	}
+
+	resp, err := httpsClient.Do(req)
 
 	if err != nil {
 		t.Log(err)
@@ -53,7 +64,15 @@ func TestRangeIntID(t *testing.T) {
 	for i := 1; i <= 100; i++ {
 		wg.Add(1)
 		go func(wg *sync.WaitGroup, id int) {
-			resp, err := http.Get(fmt.Sprintf("%s/%d", url, id))
+			req, err := http.NewRequest("GET", fmt.Sprintf("%s/%d", url, id), &bytes.Buffer{})
+
+			if err != nil {
+				t.Log(err)
+				t.Fail()
+				return
+			}
+
+			resp, err := httpsClient.Do(req)
 
 			if err != nil {
 				t.Log(err)

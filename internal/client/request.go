@@ -2,6 +2,7 @@ package client
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,8 +17,18 @@ var (
 			return new(Request)
 		},
 	}
-	httpClient iClient = &http.Client{}
+	httpClient iClient = NewClient()
 )
+
+func NewClient() *http.Client {
+	return &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+		},
+	}
+}
 
 type IRequest interface {
 	Do() (string, error)
