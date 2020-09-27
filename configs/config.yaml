@@ -1,5 +1,5 @@
 --- 
-endpoint: api/v1/payment-methods
+endpoint: /api/v1/payment-methods
 host: localhost
 port: 9902
 payment_providers: [

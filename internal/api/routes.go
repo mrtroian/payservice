@@ -1,18 +1,22 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 )
 
 func NewRouter(host, pattern string) http.Handler {
-	// @TODO: validate pattern
-	apiEndpoint = fmt.Sprintf("/%s/", pattern)
-	serverName = host
+	// // @TODO: validate pattern
+	// apiEndpoint = fmt.Sprintf("/%s/", pattern)
+	// serverName = host
 
-	mux := http.NewServeMux()
-	finalHandler := http.HandlerFunc(payMethodsHandler)
-	mux.Handle(apiEndpoint, timer(get(finalHandler)))
+	// finalHandler := http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+	// 	fmt.Println(req.URL.Path)
+	// 	if strings.Compare(req.URL.Path, apiEndpoint) > 0 {
+	// 		fmt.Println(req.URL.Path)
+	// 		payMethodsHandler(w, req)
+	// 	}
+	// })
+	// mux.Handle(apiEndpoint, timer(get(finalHandler)))
 
-	return mux
+	return nil
 }

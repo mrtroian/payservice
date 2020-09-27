@@ -27,7 +27,7 @@ func init() {
 		log.Fatalln(err)
 	}
 	url = fmt.Sprintf(
-		"https://%s:%d/%s/",
+		"https://%s:%d%s",
 		config.Host,
 		config.Port,
 		config.Endpoint,

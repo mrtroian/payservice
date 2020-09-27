@@ -12,7 +12,6 @@ import (
 	"github.com/mrtroian/payservice/internal/api"
 	"github.com/mrtroian/payservice/internal/configuration"
 	"github.com/mrtroian/payservice/internal/gateway"
-	"github.com/mrtroian/payservice/internal/server"
 )
 
 var sigChannel = make(chan os.Signal)
@@ -57,13 +56,13 @@ func main() {
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
-	router := api.NewRouter(config.Host, config.Endpoint)
+	router := api.NewAPI(config.Host, config.Endpoint)
 	gm := gateway.NewGatewayManager()
 
 	for _, p := range config.Gateways {
 		gm.AddGateway(p)
 	}
-	srv := server.New()
+	srv := api.NewServer()
 	srv.SetAddr(config.Host, config.Port)
 	srv.SetRouter(router)
 	handleSignals(cancel)

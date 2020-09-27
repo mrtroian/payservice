@@ -1,4 +1,4 @@
-package server
+package api
 
 import (
 	"context"
@@ -14,7 +14,7 @@ type Server struct {
 	*http.Server
 }
 
-func New() Server {
+func NewServer() Server {
 	return Server{new(http.Server)}
 }
 

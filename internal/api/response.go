@@ -1,6 +1,10 @@
 package api
 
-import "sync"
+import (
+	"encoding/json"
+	"net/http"
+	"sync"
+)
 
 var responsePool = sync.Pool{
 	New: func() interface{} {
@@ -9,7 +13,7 @@ var responsePool = sync.Pool{
 }
 
 type Response struct {
-	Gateways   map[string]string `json:"paymentGateways"`
+	Gateways   map[string]string `json:"paymentGateways,omitempty"`
 	StatusCode int               `json:"statusCode"`
 	Status     string            `json:"status"`
 }
@@ -26,4 +30,36 @@ func (r *Response) Return() {
 	r.StatusCode = 0
 	r.Status = ""
 	responsePool.Put(r)
+}
+
+func BadRequest() ([]byte, int) {
+	resp := NewResponse()
+	resp.StatusCode = http.StatusBadRequest
+	resp.Status = "400 - Bad Request"
+
+	r, err := json.Marshal(resp)
+
+	resp.Return()
+
+	if err != nil {
+		return nil, http.StatusInternalServerError
+	}
+
+	return r, http.StatusBadRequest
+}
+
+func NotFound() ([]byte, int) {
+	resp := NewResponse()
+	resp.StatusCode = http.StatusNotFound
+	resp.Status = "404 - Not Found"
+
+	r, err := json.Marshal(resp)
+
+	resp.Return()
+
+	if err != nil {
+		return nil, http.StatusInternalServerError
+	}
+
+	return r, http.StatusNotFound
 }

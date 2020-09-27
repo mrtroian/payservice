@@ -10,7 +10,7 @@ import (
 
 	"syscall"
 
-	"github.com/mrtroian/payservice/internal/server"
+	"github.com/mrtroian/payservice/internal/api"
 	"github.com/mrtroian/payservice/test/mockery/mockapi"
 
 	"gopkg.in/yaml.v2"
@@ -64,11 +64,11 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	handleSignals(cancel)
-	servers := make([]server.Server, 0, len(config.Providers))
+	servers := make([]api.Server, 0, len(config.Providers))
 
 	for _, p := range config.Providers {
 		router := mockapi.NewRouter(p.Endpoint, p.Name)
-		srv := server.New()
+		srv := api.NewServer()
 		srv.SetAddr(p.Host, p.Port)
 		srv.SetRouter(router)
 
