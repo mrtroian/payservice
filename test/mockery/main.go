@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 
 	"syscall"
 
@@ -47,14 +48,49 @@ func handleSignals(cancel context.CancelFunc) {
 }
 
 func main() {
-	path := os.Getenv("PAYSERVICE_MOCKCONFIG_PATH")
-	cert := os.Getenv("SSL_CERT")
-	key := os.Getenv("SSL_KEY")
-	rawConfig, err := ioutil.ReadFile(path)
+	var (
+		cert     string
+		key      string
+		confPath string
+	)
+	path := os.Getenv("PAYSERVICE_CONFIGS_DIR")
+
+	if len(path) <= 0 {
+		log.Fatalln("'PAYSERVICE_CONFIGS_DIR' not set in env")
+	}
+	files, err := ioutil.ReadDir(path)
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("cannot find 'configs/':", err)
 	}
+
+	for _, f := range files {
+		if f.Name() == "mockconfig.yaml" {
+			confPath = path + f.Name()
+		}
+	}
+
+	files, err = ioutil.ReadDir(path + "ssl/")
+
+	if err != nil {
+		log.Fatalln("cannot find 'configs/':", err)
+	}
+
+	for _, f := range files {
+		if strings.Contains(f.Name(), ".crt") {
+			cert = path + "ssl/" + f.Name()
+		}
+		if strings.Contains(f.Name(), ".key") {
+			key = path + "ssl/" + f.Name()
+		}
+	}
+
+	rawConfig, err := ioutil.ReadFile(confPath)
+
+	if err != nil {
+		log.Fatalln("cannot read from '/configs'", err)
+	}
+
 	config := new(MockConfig)
 
 	if err := yaml.Unmarshal(rawConfig, config); err != nil {

@@ -1,8 +1,11 @@
 package configuration
 
 import (
+	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
+	"strings"
 
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
@@ -35,20 +38,50 @@ func ReadConfig(path string) (*Config, error) {
 }
 
 func GetConfig() (*Config, error) {
-	path := os.Getenv("PAYSERVICE_CONFIG_PATH")
+	var (
+		conf *Config
+		err  error
+	)
+	path := os.Getenv("PAYSERVICE_CONFIGS_DIR")
 
 	if len(path) <= 0 {
-		return nil, errors.New("cannot read config from env")
+		return nil, errors.New("cannot read 'PAYSERVICE_CONFIGS_DIR' from env")
 	}
 
-	conf, err := ReadConfig(path)
+	files, err := ioutil.ReadDir(path)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "cannot read config:")
+		return nil, errors.Wrap(err, "cannot read 'configs/'")
 	}
 
-	conf.Key = os.Getenv("SSL_KEY")
-	conf.Cert = os.Getenv("SSL_CERT")
+	for _, f := range files {
+		if f.Name() == "config.yaml" {
+			conf, err = ReadConfig(path + "/config.yaml")
+		}
+	}
+
+	if conf == nil {
+		return nil, errors.Wrap(err, "cannot find config")
+	}
+
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot read config")
+	}
+
+	files, err = ioutil.ReadDir(path + "/ssl")
+
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot find ssl directory")
+	}
+
+	for _, f := range files {
+		if strings.Contains(f.Name(), ".crt") {
+			conf.Cert = path + "/ssl/" + f.Name()
+		}
+		if strings.Contains(f.Name(), ".key") {
+			conf.Key = path + "/ssl/" + f.Name()
+		}
+	}
 
 	if err := conf.validate(); err != nil {
 		return nil, err
@@ -83,4 +116,19 @@ func (c *Config) validate() error {
 	}
 
 	return nil
+}
+
+func FindConfigs() {
+	files, err := ioutil.ReadDir("./configs/ssl")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, f := range files {
+		if strings.Contains(f.Name(), ".crt") {
+
+			fmt.Println(f.Name())
+		}
+	}
 }

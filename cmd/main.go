@@ -40,7 +40,7 @@ func main() {
 	config, err = configuration.GetConfig()
 
 	if err != nil {
-		configPath := flag.String("config", "./configs/test.yaml",
+		configPath := flag.String("config", "./configs/config.yaml",
 			fmt.Sprintf("%s -config path/to/config.yaml", os.Args[0]))
 		flag.Parse()
 
